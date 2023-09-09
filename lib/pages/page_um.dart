@@ -1,4 +1,4 @@
-import 'package:app_estudos_flutter/model/informacoes_pessoais.dart';
+import 'package:app_estudos_flutter/model/informacoes_pessoais_calculo.dart';
 
 import 'package:app_estudos_flutter/repositories/informacoes_pessoais_repository.dart';
 import 'package:app_estudos_flutter/shared/widgets/app_images.dart';
@@ -454,7 +454,7 @@ class _MyWidgetState extends State<MyWidget> {
                                     child: const Text(
                                       "Ok",
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),

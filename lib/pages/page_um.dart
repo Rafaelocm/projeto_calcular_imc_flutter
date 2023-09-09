@@ -1,4 +1,4 @@
-import 'package:app_estudos_flutter/model/informacoes_pessoais.dart';
+import 'package:app_estudos_flutter/model/informacoes_pessoais_calculo.dart';
 
 import 'package:app_estudos_flutter/repositories/informacoes_pessoais_repository.dart';
 import 'package:app_estudos_flutter/shared/widgets/app_images.dart';
@@ -19,9 +19,9 @@ class _MyWidgetState extends State<MyWidget> {
   var pesoController = TextEditingController(text: "");
   PageController pageController = PageController(initialPage: 0);
   double altura = 0;
-  double resultadoIMC = 0;
   double peso = 0;
   int page = 0;
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +50,7 @@ class _MyWidgetState extends State<MyWidget> {
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
+          mini: true,
           onPressed: () {
             if (informacoesPessoais.isEmpty) {
               showDialog(
@@ -96,96 +97,100 @@ class _MyWidgetState extends State<MyWidget> {
                             return Wrap(
                               children: [
                                 Container(
-                                  width: double.maxFinite,
+                                  width: double.infinity,
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      FloatingActionButton(
-                                          onPressed: () async {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext bc) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                      "Calculadora IMC",
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                    content: const Text(
-                                                      "Tem certeza? Feche e abra novamente a lista para atualizar os cadastros",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Colors.white,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        FloatingActionButton(
+                                            onPressed: () async {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext bc) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        "Calculadora IMC",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
                                                           fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: const Text(
-                                                            "Cancelar",
-                                                            style: TextStyle(
+                                                              FontWeight.w700,
+                                                        ),
+                                                      ),
+                                                      content: const Text(
+                                                        "Tem certeza? Feche e abra novamente a lista para atualizar os cadastros",
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: const Text(
+                                                              "Cancelar",
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .red),
+                                                            )),
+                                                        TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              await informarcoesRepository
+                                                                  .removerInformacoes(
+                                                                      informacoes
+                                                                          .id);
+                                                              setState(() {});
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: const Text(
+                                                              "Confirmar",
+                                                              style: TextStyle(
                                                                 fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600,
-                                                                color:
-                                                                    Colors.red),
-                                                          )),
-                                                      TextButton(
-                                                          onPressed: () async {
-                                                            await informarcoesRepository
-                                                                .removerInformacoes(
-                                                                    informacoes
-                                                                        .id);
-                                                            setState(() {});
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: const Text(
-                                                            "Confirmar",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
-                                                          )),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          backgroundColor: Colors.transparent,
-                                          child: const Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                          )),
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        color: Colors.white,
-                                        child: Padding(
+                                                              ),
+                                                            )),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            mini: true,
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    206, 74, 2, 122),
+                                            child: const Icon(Icons.delete,
+                                                color: Color.fromARGB(
+                                                    255, 215, 218, 50))),
+                                        Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10),
+                                              horizontal: 8.0, vertical: 8.0),
                                           child: Text(
-                                            "Olá ${informacoes.nome}, segue informações:\n\nAltura: ${informacoes.altura}\nPeso: ${informacoes.peso}\nResultado IMC: ${informacoes.resultadoIMC}\n",
+                                            "Olá ${informacoes.nome}, segue informações:\n\nAltura: ${informacoes.altura}\nPeso: ${informacoes.peso}\nResultado IMC: ${informacoes.resultadoIMC}\nValor do IMC: ${informacoes.resultadoIMCValor.roundToDouble()}",
                                             style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: .7),
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -196,7 +201,7 @@ class _MyWidgetState extends State<MyWidget> {
             }
           },
           child: const Icon(
-            Icons.info,
+            Icons.list_rounded,
             color: Color.fromARGB(206, 74, 2, 122),
           )),
       backgroundColor: const Color.fromARGB(206, 74, 2, 122),
@@ -245,6 +250,7 @@ class _MyWidgetState extends State<MyWidget> {
                               actions: [
                                 TextButton(
                                     onPressed: () {
+                                      nomeController.clear();
                                       Navigator.pop(context);
                                     },
                                     child: const Text(
@@ -299,13 +305,6 @@ class _MyWidgetState extends State<MyWidget> {
                         fontSize: 18,
                         fontWeight: FontWeight.w600),
                   ),
-                  onChanged: (value) {
-                    try {
-                      altura = double.parse(value);
-                    } catch (e) {
-                      Exception(e);
-                    }
-                  },
                 ),
                 const SizedBox(
                   height: 30,
@@ -329,13 +328,6 @@ class _MyWidgetState extends State<MyWidget> {
                         fontSize: 22,
                         fontWeight: FontWeight.w600),
                   ),
-                  onChanged: (value) {
-                    try {
-                      peso = double.parse(pesoController.text);
-                    } catch (e) {
-                      Exception(e);
-                    }
-                  },
                 ),
                 const SizedBox(
                   height: 30,
@@ -432,14 +424,44 @@ class _MyWidgetState extends State<MyWidget> {
                         if (altura == 0 || peso == 0) {
                           return;
                         } else {
-                          resultadoIMC = peso / (altura * altura);
                           await informarcoesRepository.adicionarPessoas(
                             InformacoesPessoais(
-                              nomeController.text,
-                              peso,
-                              altura,
-                              resultadoIMC.roundToDouble(),
-                            ),
+                                nomeController.text, peso, altura),
+                          );
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext bc) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Calculadora IMC",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                content: const Text(
+                                  "Cadastrado com sucesso, para visualizar clique no ícone ao canto inferior direito.",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "Ok",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                           setState(() {});
                           nomeController.text = "";

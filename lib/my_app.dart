@@ -1,4 +1,4 @@
-import 'package:app_estudos_flutter/pages/page_um.dart';
+import 'package:app_estudos_flutter/pages/main_page.dart';
 import 'package:flutter/material.dart';
 
 class Myapp extends StatelessWidget {
@@ -11,7 +11,7 @@ class Myapp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       //Chama o HomePage na página principal
-      home: const MyWidget(),
+      home: MainPage(),
     );
   }
 }

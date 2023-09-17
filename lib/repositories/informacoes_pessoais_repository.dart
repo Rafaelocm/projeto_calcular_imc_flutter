@@ -1,50 +1,55 @@
+import 'package:app_estudos_flutter/database/sqlite_bda.dart';
 import 'package:app_estudos_flutter/model/informacoes_pessoais_calculo.dart';
 
 class InformacoesPessoaisRepository {
-  List<InformacoesPessoais> informacoes = [];
+  Future<List<InformacoesPessoais>> obterDados() async {
+    List<InformacoesPessoais> informacoes = [];
+    var db = await SQLiteBDA().obterBancoDeDados();
+    var infor = await db.rawQuery(
+        'SELECT id, nome, peso, altura, resultadoIMC FROM informacoes');
 
-  Future<void> adicionarPessoas(InformacoesPessoais informacoesPessoais) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    verificarResultado(informacoesPessoais);
-    informacoes.add(informacoesPessoais);
-  }
-
-  void verificarResultado(InformacoesPessoais informacoesPessoais) {
-    informacoesPessoais.resultadoIMCValor = informacoesPessoais.peso /
-        (informacoesPessoais.altura * informacoesPessoais.altura);
-    if (informacoesPessoais.resultadoIMCValor < 18.5) {
-      informacoesPessoais.resultadoIMC = "Abaixo do peso";
-    } else if (informacoesPessoais.resultadoIMCValor >= 18.6 &&
-        informacoesPessoais.resultadoIMCValor <= 24.9) {
-      informacoesPessoais.resultadoIMC = "Peso ideial (parabéns)";
-    } else if (informacoesPessoais.resultadoIMCValor >= 25 &&
-        informacoesPessoais.resultadoIMCValor <= 29.9) {
-      informacoesPessoais.resultadoIMC = "Levemente acima do peso";
-    } else if (informacoesPessoais.resultadoIMCValor >= 30 &&
-        informacoesPessoais.resultadoIMCValor <= 34.9) {
-      informacoesPessoais.resultadoIMC = "Obesidade grau I";
-    } else if (informacoesPessoais.resultadoIMCValor >= 35 &&
-        informacoesPessoais.resultadoIMCValor <= 39.9) {
-      informacoesPessoais.resultadoIMC = "Obesidade grau II(severa)";
-    } else if (informacoesPessoais.resultadoIMCValor >= 40) {
-      informacoesPessoais.resultadoIMC = "Obesidade III (mórbida)";
+    for (var element in infor) {
+      informacoes.add(InformacoesPessoais(
+        int.parse(element["id"].toString()),
+        element["nome"].toString(),
+        double.parse(element["peso"].toString()),
+        double.parse(element["altura"].toString()),
+        element["resultadoIMC"].toString(),
+      ));
     }
-  }
 
-  Future<void> alterarInformacoes(String id, double peso, double altura) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    var informacoesId = informacoes.firstWhere((infor) => infor.id == id);
-    informacoesId.altura = altura;
-    informacoesId.peso = peso;
-  }
-
-  Future<void> removerInformacoes(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    informacoes.removeWhere((infor) => infor.id == id);
-  }
-
-  Future<List<InformacoesPessoais>> listarInformacoes() async {
-    Future.delayed(const Duration(milliseconds: 300));
     return informacoes;
+  }
+
+  Future<void> salvar(InformacoesPessoais informacoesPessoais) async {
+    var db = await SQLiteBDA().obterBancoDeDados();
+    informacoesPessoais.verificarResultado();
+    db.rawInsert(
+        'INSERT INTO informacoes(nome, peso, altura, resultadoIMC) VALUES(?,?,?,?)',
+        [
+          informacoesPessoais.nome,
+          informacoesPessoais.peso,
+          informacoesPessoais.altura,
+          informacoesPessoais.resultadoIMC
+        ]);
+  }
+
+  Future<void> atualizar(InformacoesPessoais informacoesPessoais) async {
+    var db = await SQLiteBDA().obterBancoDeDados();
+    db.rawUpdate(
+        'UPDATE informacoes SET nome = ?, peso = ?, altura = ?, resultadoIMC = ? WHERE id = ?',
+        [
+          informacoesPessoais.nome,
+          informacoesPessoais.peso,
+          informacoesPessoais.altura,
+          informacoesPessoais.resultadoIMC
+        ]);
+  }
+
+  Future<void> removerInformacoes(
+      InformacoesPessoais informacoesPessoais) async {
+    var db = await SQLiteBDA().obterBancoDeDados();
+    db.rawDelete(
+        'DELETE FROM informacoes WHERE id = ?', [informacoesPessoais.id]);
   }
 }

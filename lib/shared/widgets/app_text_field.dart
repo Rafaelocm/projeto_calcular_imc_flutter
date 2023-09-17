@@ -5,15 +5,18 @@ class AppTextField extends StatelessWidget {
       {super.key,
       required this.texto,
       required this.controller,
-      this.textInputType});
+      this.textInputType,
+      required this.obscuretext});
   final String? texto;
   final TextEditingController? controller;
   final TextInputType? textInputType;
+  final bool obscuretext;
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: TextField(
+        obscureText: obscuretext,
         keyboardType: textInputType,
         controller: controller,
         style: const TextStyle(color: Colors.white, fontSize: 16),
